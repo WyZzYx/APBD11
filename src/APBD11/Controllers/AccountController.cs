@@ -9,7 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace APBD11.Controllers;
 
 [ApiController]
-    [Route("api/[controller]")]
+    [Route("api/accounts")]
     public class AccountsController : ControllerBase
     {
         private readonly IAccountService _accountService;
