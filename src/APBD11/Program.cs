@@ -1,12 +1,24 @@
 using System.Text;
+using System.Text.Json;
 using APBD11.Data;
 using APBD11.Interfaces;
+using APBD11.Middleware;
+using APBD11.Models;
 using APBD11.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 
+
+
+
 var builder = WebApplication.CreateBuilder(args);
+
+
+var rulesJson = File.ReadAllText(Path.Combine(AppContext.BaseDirectory, "example_validation_rules.json"));
+var validationRules = JsonSerializer.Deserialize<ValidationRuleSet>(rulesJson,
+    new JsonSerializerOptions { PropertyNameCaseInsensitive = true })!;
+builder.Services.AddSingleton(validationRules);
 
 
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
@@ -41,7 +53,10 @@ builder.Services.AddAuthentication(options =>
 
 builder.Services.AddAuthorization();
 
+
 var app = builder.Build();
+
+app.UseMiddleware<AdditionalPropertiesValidationMiddleware>();
 
 
 app.UseRouting();

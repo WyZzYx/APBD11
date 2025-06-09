@@ -10,6 +10,7 @@ public class ApplicationDbContext : DbContext
     public DbSet<Device> Devices { get; set; }
     
     public DbSet<DeviceType> DeviceTypes { get; set; }
+    public DbSet<Position> Positions { get; set; }
 
     public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
         : base(options)

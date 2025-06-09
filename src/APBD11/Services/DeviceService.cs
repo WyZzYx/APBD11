@@ -3,18 +3,35 @@
  using APBD11.Models;
  
  using APBD11.Data;
+ using Microsoft.AspNetCore.Mvc;
  using Microsoft.EntityFrameworkCore;
 
  public class DeviceService : IDeviceService
-    {
-        private readonly ApplicationDbContext _context;
+ {
+     private readonly ApplicationDbContext _context;
 
-        public DeviceService(ApplicationDbContext context)
-        {
-            _context = context;
-        }
+     public DeviceService(ApplicationDbContext context)
+     {
+         _context = context;
+     }
 
-        public async Task<IEnumerable<DeviceDto>> GetAllAsync()
+   
+
+     public async Task<IEnumerable<Role>> GetRolesAsync()
+     {
+         return await _context.Roles
+             .AsNoTracking()
+             .ToListAsync();
+    }
+
+     public async Task<IEnumerable<Position>> GetPositionsAsync()
+     {
+         return await _context.Positions
+             .AsNoTracking()
+             .ToListAsync();
+     }
+
+     public async Task<IEnumerable<DeviceDto>> GetAllAsync()
         {
             
             var entities = await _context.Devices

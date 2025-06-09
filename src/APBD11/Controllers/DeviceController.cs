@@ -13,15 +13,26 @@ namespace APBD11.Controllers;
     public class DeviceController : ControllerBase
     {
         private readonly IDeviceService _deviceService;
+        
+        private readonly ILogger<DeviceController> _logger;
 
-        public DeviceController(IDeviceService deviceService)
+
+        public DeviceController(IDeviceService deviceService,  ILogger<DeviceController> logger)
         {
             _deviceService = deviceService;
+            _logger = logger;
+
         }
+        
+        
+        
+        
 
         [HttpGet]
         public async Task<ActionResult<IEnumerable<DeviceDto>>> GetAll()
         {
+            _logger.LogInformation("GET /api/devices");
+
             var dtos = await _deviceService.GetAllAsync();
             return Ok(dtos);
         }
@@ -29,6 +40,8 @@ namespace APBD11.Controllers;
         [HttpGet("{id:guid}")]
         public async Task<ActionResult<DeviceDto>> GetById(Guid id)
         {
+            _logger.LogInformation("GET /api/devices/{id:guid}");
+
             var dto = await _deviceService.GetByIdAsync(id);
             if (dto == null)
                 return NotFound();  
@@ -38,6 +51,8 @@ namespace APBD11.Controllers;
         [HttpPost]
         public async Task<ActionResult<DeviceDto>> Create([FromBody] DeviceDto dto)
         {
+            _logger.LogInformation("POST /api/devices");
+
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
@@ -59,6 +74,9 @@ namespace APBD11.Controllers;
         [HttpPut("{id:guid}")]
         public async Task<IActionResult> Update(Guid id, [FromBody] DeviceDto dto)
         {
+            
+            _logger.LogInformation("PUT /api/devices/{id:guid}");
+
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
@@ -85,6 +103,8 @@ namespace APBD11.Controllers;
         [HttpDelete("{id:guid}")]
         public async Task<IActionResult> Delete(Guid id)
         {
+            _logger.LogInformation("DELETE /api/devices/{id:guid}");
+
             try
             {
                 await _deviceService.DeleteAsync(id);
