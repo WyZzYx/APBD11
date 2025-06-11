@@ -13,6 +13,7 @@ namespace APBD11.Controllers;
     public class AccountsController : ControllerBase
     {
         private readonly IAccountService _accountService;
+        
 
         public AccountsController(IAccountService accountService)
         {

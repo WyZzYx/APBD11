@@ -24,20 +24,19 @@ namespace APBD11.Services;
 
         public async Task<Account> RegisterAsync(AccountRegisterDto registerDto)
         {
-            if (await _context.Accounts.AnyAsync(a => a.Username == registerDto.Username))
+            if (await _context.Account.AnyAsync(a => a.Username == registerDto.Username))
             {
                 throw new InvalidOperationException($"Username '{registerDto.Username}' is already taken.");
             }
 
             var account = new Account
             {
-                Id       = Guid.NewGuid(),
                 Username = registerDto.Username,
                 Password = registerDto.Password,
                 RoleId   = registerDto.RoleId
             };
 
-            _context.Accounts.Add(account);
+            _context.Account.Add(account);
             await _context.SaveChangesAsync();
 
             return account;
@@ -45,7 +44,7 @@ namespace APBD11.Services;
 
         public async Task<AuthResponseDto> AuthenticateAsync(AuthRequestDto authDto)
         {
-            var account = await _context.Accounts
+            var account = await _context.Account
                                         .Include(a => a.Role)
                                         .SingleOrDefaultAsync(a =>
                                             a.Username == authDto.Username &&
@@ -93,12 +92,9 @@ namespace APBD11.Services;
 
         public async Task<Account> GetByIdAsync(string id)
         {
-            if (!Guid.TryParse(id, out var guidId))
-                throw new KeyNotFoundException("Invalid GUID format.");
-
-            var account = await _context.Accounts
+            var account = await _context.Account
                                         .Include(a => a.Role)
-                                        .SingleOrDefaultAsync(a => a.Id == guidId);
+                                        .SingleOrDefaultAsync(a => a.Id.Equals(id));
 
             if (account == null)
             {
@@ -110,7 +106,7 @@ namespace APBD11.Services;
 
         public async Task<IEnumerable<Account>> GetAllAsync()
         {
-            return await _context.Accounts
+            return await _context.Account
                                  .Include(a => a.Role)
                                  .ToListAsync();
         }
@@ -120,7 +116,7 @@ namespace APBD11.Services;
             if (!Guid.TryParse(id, out var guidId))
                 throw new KeyNotFoundException("Invalid GUID format.");
 
-            var account = await _context.Accounts.FindAsync(guidId);
+            var account = await _context.Account.FindAsync(guidId);
             if (account == null)
             {
                 throw new KeyNotFoundException("Account not found.");
@@ -133,8 +129,8 @@ namespace APBD11.Services;
 
             if (account.Username != updateDto.Username)
             {
-                if (await _context.Accounts.AnyAsync(a => 
-                    a.Username == updateDto.Username && a.Id != guidId))
+                if (await _context.Account.AnyAsync(a => 
+                    a.Username == updateDto.Username && a.Id.Equals(id)))
                 {
                     throw new InvalidOperationException($"Username '{updateDto.Username}' is already taken.");
                 }
@@ -149,7 +145,7 @@ namespace APBD11.Services;
                 account.RoleId = updateDto.RoleId;
             }
 
-            _context.Accounts.Update(account);
+            _context.Account.Update(account);
             await _context.SaveChangesAsync();
         }
 
@@ -158,13 +154,13 @@ namespace APBD11.Services;
             if (!Guid.TryParse(id, out var guidId))
                 throw new KeyNotFoundException("Invalid GUID format.");
 
-            var account = await _context.Accounts.FindAsync(guidId);
+            var account = await _context.Account.FindAsync(guidId);
             if (account == null)
             {
                 throw new KeyNotFoundException("Account not found.");
             }
 
-            _context.Accounts.Remove(account);
+            _context.Account.Remove(account);
             await _context.SaveChangesAsync();
         }
     }

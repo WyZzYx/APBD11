@@ -9,6 +9,8 @@ using Microsoft.AspNetCore.Mvc;
 namespace APBD11.Controllers;
 
 [ApiController]
+[Authorize]
+
     [Route("api/devices")]
     public class DeviceController : ControllerBase
     {

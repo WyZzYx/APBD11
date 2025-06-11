@@ -16,17 +16,17 @@ public class LookupService : ILookupService
     }
 
     public async Task<IEnumerable<DeviceType>> GetDeviceTypesAsync()
-        => await _ctx.DeviceTypes
+        => await _ctx.DeviceType
             .AsNoTracking()
             .ToListAsync();
 
     public async Task<IEnumerable<Role>> GetRolesAsync()
-        => await _ctx.Roles
+        => await _ctx.Role
             .AsNoTracking()
             .ToListAsync();
 
     public async Task<IEnumerable<Position>> GetPositionsAsync()
-        => await _ctx.Positions
+        => await _ctx.Position
             .AsNoTracking()
             .ToListAsync();
 }

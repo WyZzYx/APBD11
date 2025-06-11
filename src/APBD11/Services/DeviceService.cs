@@ -19,14 +19,14 @@
 
      public async Task<IEnumerable<Role>> GetRolesAsync()
      {
-         return await _context.Roles
+         return await _context.Role
              .AsNoTracking()
              .ToListAsync();
     }
 
      public async Task<IEnumerable<Position>> GetPositionsAsync()
      {
-         return await _context.Positions
+         return await _context.Position
              .AsNoTracking()
              .ToListAsync();
      }
@@ -34,7 +34,7 @@
      public async Task<IEnumerable<DeviceDto>> GetAllAsync()
         {
             
-            var entities = await _context.Devices
+            var entities = await _context.Device
                                          .AsNoTracking()
                                          .ToListAsync();
 
@@ -50,7 +50,7 @@
 
         public async Task<DeviceDto?> GetByIdAsync(Guid id)
         {
-            var entity = await _context.Devices
+            var entity = await _context.Device
                                        .AsNoTracking()
                                        .FirstOrDefaultAsync(d => d.Id == id);
             if (entity == null)
@@ -68,7 +68,7 @@
 
         public async Task<DeviceDto> CreateAsync(DeviceDto dto)
         {
-            var deviceTypeExists = await _context.DeviceTypes
+            var deviceTypeExists = await _context.DeviceType
                                                  .AnyAsync(dt => dt.Id == dto.DeviceTypeId);
             if (!deviceTypeExists)
                 throw new ArgumentException($"DeviceType with Id '{dto.DeviceTypeId}' not found.");
@@ -82,7 +82,7 @@
                 DeviceTypeId = dto.DeviceTypeId
             };
 
-            _context.Devices.Add(entity);
+            _context.Device.Add(entity);
             await _context.SaveChangesAsync();
 
             return new DeviceDto
@@ -97,13 +97,13 @@
 
         public async Task UpdateAsync(Guid id, DeviceDto dto)
         {
-            var entity = await _context.Devices.FirstOrDefaultAsync(d => d.Id == id);
+            var entity = await _context.Device.FirstOrDefaultAsync(d => d.Id == id);
             if (entity == null)
                 throw new KeyNotFoundException($"Device with Id '{id}' not found.");
 
             if (dto.DeviceTypeId != entity.DeviceTypeId)
             {
-                var typeExists = await _context.DeviceTypes
+                var typeExists = await _context.DeviceType
                                                .AnyAsync(dt => dt.Id == dto.DeviceTypeId);
                 if (!typeExists)
                     throw new ArgumentException($"DeviceType with Id '{dto.DeviceTypeId}' not found.");
@@ -119,11 +119,11 @@
 
         public async Task DeleteAsync(Guid id)
         {
-            var entity = await _context.Devices.FirstOrDefaultAsync(d => d.Id == id);
+            var entity = await _context.Device.FirstOrDefaultAsync(d => d.Id == id);
             if (entity == null)
                 throw new KeyNotFoundException($"Device with Id '{id}' not found.");
 
-            _context.Devices.Remove(entity);
+            _context.Device.Remove(entity);
             await _context.SaveChangesAsync();
         }
     }
